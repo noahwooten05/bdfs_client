@@ -50,7 +50,7 @@ typedef struct _FS_GAP {
 }FS_GAP, * PFS_GAP;
 
 void BdfsClient_OpenFile(const char* File);
-void BdfsClient_CloseFile(unsigned long Handle);
+void BdfsClient_CloseFile(void);
 void BdfsClient_RawRead(void* Buffer, unsigned long Location, unsigned long Size);
 void BdfsClient_RawWrite(void* Buffer, unsigned long Location, unsigned long Size);
 

@@ -1,8 +1,26 @@
 #include "../fs.h"
+#include <stdio.h>
 
-void BdfsClient_Init(void);
-void BdfsClient_Shutdown(void);
+FILE* CrtFile;
 
-// MSVC implementation
-unsigned long BdfsClient_OpenFile(const char* File);
-void BdfsClient_CloseFile(unsigned long Handle);
+void BdfsClient_OpenFile(const char* File) {
+	CrtFile = fopen(File, "rb+");
+	return;
+}
+
+void BdfsClient_CloseFile(void) {
+	fclose(CrtFile);
+	return;
+}
+
+void BdfsClient_RawRead(void* Buffer, unsigned long Location, unsigned long Size) {
+	fseek(CrtFile, Location, SEEK_SET);
+	fread(Buffer, Size, 1, CrtFile);
+	return;
+}
+
+void BdfsClient_RawWrite(void* Buffer, unsigned long Location, unsigned long Size) {
+	fseek(CrtFile, Location, SEEK_SET);
+	fwrite(Buffer, Size, 1, CrtFile);
+	return;
+}
