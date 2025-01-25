@@ -49,17 +49,10 @@ typedef struct _FS_GAP {
 	unsigned long Next;
 }FS_GAP, * PFS_GAP;
 
-typedef struct _BDFS_CLIENT {
-	FILE* PhysicalFile;
-}BDFS_CLIENT, *PBDFS_CLIENT;
-extern PBDFS_CLIENT Clients;
-
-void BdfsClient_Init(void);
-void BdfsClient_Shutdown(void);
-
-// MSVC implementation
-unsigned long BdfsClient_OpenFile(const char* File);
+void BdfsClient_OpenFile(const char* File);
 void BdfsClient_CloseFile(unsigned long Handle);
+void BdfsClient_RawRead(void* Buffer, unsigned long Location, unsigned long Size);
+void BdfsClient_RawWrite(void* Buffer, unsigned long Location, unsigned long Size);
 
 unsigned long BdfsClient_GetDirHandleByPath(char* Path);
 unsigned long BdfsClient_GetDirEntryCount(unsigned long DirHandle);

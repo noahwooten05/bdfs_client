@@ -23,5 +23,14 @@
     <ClCompile Include="main.c">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="bdfs\bdfs_file.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="bdfs\bdfs_core.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="bdfs\bdfs_dirs.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

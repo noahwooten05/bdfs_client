@@ -130,6 +130,9 @@
     <ClInclude Include="fs.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="bdfs\bdfs_core.c" />
+    <ClCompile Include="bdfs\bdfs_dirs.c" />
+    <ClCompile Include="bdfs\bdfs_file.c" />
     <ClCompile Include="main.c" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
