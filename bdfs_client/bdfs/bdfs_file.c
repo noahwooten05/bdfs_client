@@ -29,6 +29,7 @@ void BdfsClient_UpdateFile(unsigned long FileHandle, void* Data, unsigned long N
 		FsHead.FsHigh += NewSize;
 		ThisFile.DataSize = NewSize;
 		BdfsClient_RawWrite(&FsHead, 0, sizeof(FS_HEAD));
+		BdfsClient_RawWrite(&ThisFile, FileHandle, sizeof(FS_FILE));
 	}
 
 	if (NewSize > ThisFile.DataSize && ThisFile.DataSize != 0) {
@@ -60,6 +61,7 @@ void BdfsClient_UpdateFile(unsigned long FileHandle, void* Data, unsigned long N
 		ThisFile.DataSize = NewSize;
 		FsHead.FsHigh += NewSize;
 		BdfsClient_RawWrite(&FsHead, 0, sizeof(FS_HEAD));
+		BdfsClient_RawWrite(&ThisFile, FileHandle, sizeof(FS_FILE));
 
 	}
 	else if (NewSize < ThisFile.DataSize) {
@@ -85,6 +87,9 @@ void BdfsClient_UpdateFile(unsigned long FileHandle, void* Data, unsigned long N
 			Me2 = ThisGap.Next;
 			BdfsClient_RawRead(&ThisGap, ThisGap.Next, sizeof(FS_GAP));
 		} while (ThisGap.Next);
+
+		ThisFile.DataSize = NewSize;
+		BdfsClient_RawWrite(&ThisFile, FileHandle, sizeof(FS_FILE));
 	}
 
 	BdfsClient_RawWrite(Data, ThisFile.DataLocation, NewSize);
