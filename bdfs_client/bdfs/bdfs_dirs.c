@@ -147,6 +147,16 @@ unsigned long BdfsClient_CreateFile(unsigned long DirHandle, char* FileName) {
 
 	unsigned long NameHash = BdfsClient_HashStr(FileName);
 
+	// verify file doesn't already exist
+	FS_ENTRY ThisEntry = { 0 };
+	BdfsClient_RawRead(&ThisEntry, FsHead.FirstEntry, sizeof(FS_ENTRY));
+	do {
+		for (int i = 0; i < ThisEntry.Entries[i].FileNameHash == NameHash)
+			return FS_INVALID;
+
+		BdfsClient_RawRead(&ThisEntry, ThisEntry.Next, sizeof(FS_ENTRY));
+	} while (ThisEntry.Next);
+
 	if (FsHead.FirstFile == 0) {
 		FS_ENTRY NewEntry = { 0 };
 		NewEntry.Entries[0].FileMetaLocation = FsHead.FsHigh;
