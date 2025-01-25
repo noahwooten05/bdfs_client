@@ -22,10 +22,10 @@ unsigned long BdfsClient_GetDirHandleByPath(char* Path) {
 		TokenHash = BdfsClient_HashStr(Token);
 		FS_DIRECTORY CurrentDir = { 0 };
 		unsigned long DirFound = 0;
-		unsigned long DirId = CurrentDirId;
+		unsigned long DirId = CurrentDirLoc;
 
-		while (DirId != 0) {
-			BdfsClient_RawRead(&CurrentDir, CurrentDirLoc, sizeof(CurrentDir));
+		while (DirId) {
+			BdfsClient_RawRead(&CurrentDir, DirId, sizeof(CurrentDir));
 			if (CurrentDir.DirNameHash == TokenHash) {
 				DirFound = 1;
 				break;
@@ -73,8 +73,15 @@ char* BdfsClient_GetDirEntryName(unsigned long DirHandle, unsigned long Iterator
 	unsigned long Count = 0;
 	do {
 		for (int i = 0; i < 256; i++) {
-			if (EntryHdr.Entries[i].FileParentDirLoc == DirHandle)
+			if (EntryHdr.Entries[i].FileParentDirLoc == DirHandle) {	
+				if (Count == Iterator) {
+					FS_FILE File = { 0 };
+					BdfsClient_RawRead(&File, EntryHdr.Entries[i].FileMetaLocation, sizeof(FS_FILE));
+					return _strdup(File.FileName);
+				}
+
 				Count++;
+			}
 		}
 
 		BdfsClient_RawRead(&EntryHdr, EntryHdr.Next, sizeof(FS_ENTRY));
@@ -110,9 +117,8 @@ unsigned long BdfsClient_GetFileHandleByPath(char* Path) {
 	FileName++;
 	char* File = strdup(FileName);
 
-	char* _Path = strdup(Path);
-	FileName = strstr(_Path, "/");
-	*FileName = 0x00;
+	char* _Path = strdup(Path + 1);
+	strstr(_Path, "/")[0] = 0x00;
 
 	unsigned long DirLoc = BdfsClient_GetDirHandleByPath(_Path);
 	free(_Path);
@@ -159,7 +165,7 @@ unsigned long BdfsClient_CreateFile(unsigned long DirHandle, char* FileName) {
 		BdfsClient_RawRead(&ThisEntry, ThisEntry.Next, sizeof(FS_ENTRY));
 	} while (ThisEntry.Next);
 
-	if (FsHead.FirstFile == 0) {
+	if (FsHead.FirstEntry == 0) {
 		FS_ENTRY NewEntry = { 0 };
 		NewEntry.Entries[0].FileMetaLocation = FsHead.FsHigh;
 		NewEntry.Entries[0].FileParentDirLoc = sizeof(FS_HEAD); // first dir is always at FS_HEAD + 0
@@ -173,7 +179,7 @@ unsigned long BdfsClient_CreateFile(unsigned long DirHandle, char* FileName) {
 		BdfsClient_RawWrite(&NewFile, FsHead.FsHigh, sizeof(FS_FILE));
 		FsHead.FsHigh += sizeof(FS_FILE);
 		BdfsClient_RawWrite(&NewEntry, FsHead.FsHigh, sizeof(FS_ENTRY));
-		FsHead.FirstFile = FsHead.FsHigh;
+		FsHead.FirstEntry = FsHead.FsHigh;
 		FsHead.FsHigh += sizeof(FS_ENTRY);
 		BdfsClient_RawWrite(&FsHead, 0, sizeof(FS_HEAD));
 
@@ -269,6 +275,7 @@ unsigned long BdfsClient_CreateDir(unsigned long ParentHnd, char* Name) {
 			NewDir.DirNameHash = BdfsClient_HashStr(Name);
 			NewDir.ParentLoc = ParentHnd;
 			BdfsClient_RawWrite(&NewDir, Directory.Next, sizeof(FS_DIRECTORY));
+			return Directory.Next;
 		}
 
 		Me = Directory.Next;

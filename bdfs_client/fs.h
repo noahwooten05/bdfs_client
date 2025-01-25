@@ -7,7 +7,6 @@ typedef struct _FS_HEAD {
 	unsigned long Magic;
 
 	unsigned long FirstDirectory;
-	unsigned long FirstFile;
 	unsigned long FirstEntry;
 	unsigned long FirstGap;
 
