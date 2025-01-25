@@ -48,6 +48,7 @@ typedef struct _FS_GAP {
 	unsigned long GapLocation;
 	unsigned long GapSize;
 	unsigned long Next;
+	unsigned char Used;
 }FS_GAP, * PFS_GAP;
 
 void BdfsClient_Create(const char* File);
