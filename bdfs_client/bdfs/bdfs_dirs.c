@@ -151,8 +151,10 @@ unsigned long BdfsClient_CreateFile(unsigned long DirHandle, char* FileName) {
 	FS_ENTRY ThisEntry = { 0 };
 	BdfsClient_RawRead(&ThisEntry, FsHead.FirstEntry, sizeof(FS_ENTRY));
 	do {
-		for (int i = 0; i < ThisEntry.Entries[i].FileNameHash == NameHash)
-			return FS_INVALID;
+		for (int i = 0; i < 256; i++) {
+			if (ThisEntry.Entries[i].FileNameHash == NameHash)
+				return FS_INVALID;
+		}
 
 		BdfsClient_RawRead(&ThisEntry, ThisEntry.Next, sizeof(FS_ENTRY));
 	} while (ThisEntry.Next);

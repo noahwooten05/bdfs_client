@@ -9,17 +9,19 @@ int main(int argc, char** argv) {
 	BdfsClient_OpenFile("fs.bin");
 	unsigned long RootDir = BdfsClient_GetDirHandleByPath("/");
 	
-
-	
-	/*
-	unsigned long NewFile = BdfsClient_CreateFile(RootDir, "test.bin");
-
+	unsigned long NewFile;
 	char FileBuffer[] = "This is a test file.";
 
+	NewFile = BdfsClient_CreateFile(RootDir, "test0.bin");
 	BdfsClient_UpdateFile(NewFile, FileBuffer, sizeof(FileBuffer));
-	char* Buffer = BdfsClient_ReadFile(NewFile);
-	printf("File: %s\n", Buffer);
-	free(Buffer);*/
+	NewFile = BdfsClient_CreateFile(RootDir, "test1.bin");
+	BdfsClient_UpdateFile(NewFile, FileBuffer, sizeof(FileBuffer));
+	NewFile = BdfsClient_CreateFile(RootDir, "test2.bin");
+	BdfsClient_UpdateFile(NewFile, FileBuffer, sizeof(FileBuffer));
+	NewFile = BdfsClient_CreateFile(RootDir, "test3.bin");
+	BdfsClient_UpdateFile(NewFile, FileBuffer, sizeof(FileBuffer));
+	NewFile = BdfsClient_CreateFile(RootDir, "test4.bin");
+	BdfsClient_UpdateFile(NewFile, FileBuffer, sizeof(FileBuffer));
 
 	return;
 }
