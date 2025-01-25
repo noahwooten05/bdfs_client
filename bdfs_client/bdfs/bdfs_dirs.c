@@ -246,10 +246,15 @@ unsigned long BdfsClient_CreateDir(unsigned long ParentHnd, char* Name) {
 	BdfsClient_RawRead(&FsHead, 0, sizeof(FsHead));
 
 	unsigned long FirstDir = FsHead.FirstDirectory;
+
 	FS_DIRECTORY Directory = { 0 };
 	BdfsClient_RawRead(&Directory, FirstDir, sizeof(FS_DIRECTORY));
 	unsigned long Me = FirstDir;
+	unsigned long DirHashName = BdfsClient_HashStr(Name);
 	do {
+		if (Directory.DirNameHash == DirHashName)
+			return FS_INVALID;
+
 		if (Directory.Next == 0) {
 			Directory.Next = FsHead.FsHigh;
 			FsHead.FsHigh += sizeof(FS_DIRECTORY);
