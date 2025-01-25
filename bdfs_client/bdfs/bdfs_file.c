@@ -24,7 +24,14 @@ void BdfsClient_UpdateFile(unsigned long FileHandle, void* Data, unsigned long N
 	FS_FILE ThisFile = { 0 };
 	BdfsClient_RawRead(&ThisFile, FileHandle, sizeof(FS_FILE));
 
-	if (NewSize > ThisFile.DataSize) {
+	if (ThisFile.DataLocation == 0) {
+		ThisFile.DataLocation = FsHead.FsHigh;
+		FsHead.FsHigh += NewSize;
+		ThisFile.DataSize = NewSize;
+		BdfsClient_RawWrite(&FsHead, 0, sizeof(FS_HEAD));
+	}
+
+	if (NewSize > ThisFile.DataSize && ThisFile.DataSize != 0) {
 		// move to a new chunk, create a gap at the old file
 		FS_GAP ThisGap = { 0 };
 		unsigned long Me2 = FsHead.FirstGap;
