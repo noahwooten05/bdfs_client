@@ -80,7 +80,7 @@ void BdfsClient_UpdateFile(unsigned long FileHandle, void* Data, unsigned long N
 		} while (ThisGap.Next);
 	}
 
-	BdfsClient_RawWrite(Buffer, ThisFile.DataLocation, NewSize);
+	BdfsClient_RawWrite(Data, ThisFile.DataLocation, NewSize);
 	return;
 }
 
