@@ -10,6 +10,9 @@ unsigned long BdfsClient_GetDirHandleByPath(char* Path) {
 	FS_HEAD FsHead = { 0 };
 	BdfsClient_RawRead(&FsHead, 0, sizeof(FS_HEAD));
 
+	if (!strcmp(Path, "/"))
+		return FsHead.FirstDirectory;
+
 	char* Token = strtok(Path, "/");
 	unsigned long CurrentDirId = 0;
 	unsigned long CurrentDirLoc = FsHead.FirstDirectory;
