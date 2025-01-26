@@ -11,3 +11,6 @@ BDFS is a simple filesystem implementation for educational purposes. It provides
 ## File Structure
 
 The filesystem is made up of several key structures to manage file and directory metadata, entries, and gaps.
+
+## Purpose
+This is being used for early OS development before the more complicated Bolt/PL FS can be implemented it is extremely complex relative to this.
